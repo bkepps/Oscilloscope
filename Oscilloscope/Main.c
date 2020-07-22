@@ -23,9 +23,19 @@ int main(int argc, char** argv) {
 	SDL_Renderer* ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	Uint32* windowID = malloc(sizeof(Uint32));
 	*windowID = SDL_GetWindowID(win);
+	
+	/*initialize SDL_TTF*/
+	TTF_Init();
 
 	/*initialize structs and stuff*/
 	Textures* textures = init_Textures(basePath, ren);		//load textures
+
+	pointer = BitsNBobs_append(basePath, "Resources\\freefont-20120503\\FreeMonoBold.ttf");		//load font
+	TTF_Font* font = TTF_OpenFont(pointer, 12);
+	free(pointer);
+	if (font == NULL)
+		return 34;
+
 	data* grphInfo = init_data();
 	data* grphInfoCPY = malloc(sizeof(data));
 	init_dataCopy(grphInfo, grphInfoCPY);

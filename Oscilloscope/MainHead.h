@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL.h>
-#include <SDL_quit.h>
-#include <SDL_render.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 #include <Windows.h>
 #include <math.h>
