@@ -2,13 +2,14 @@
 
 data* init_data() {
 	data* grphInfo = malloc(sizeof(data));
+	if (grphInfo == NULL)
+		return NULL;
 	grphInfo->graphHeight = 400;
 	grphInfo->graphWidth = 500;
 	grphInfo->numOfPoints = grphInfo->graphWidth + 20;
 	grphInfo->points = (SDL_Point*) malloc(sizeof(SDL_Point) * grphInfo->numOfPoints);
 	grphInfo->valueMax = 1023;
-	if (init_port(grphInfo))
-		return NULL;
+	init_port(grphInfo);
 	grphInfo->Mutex = SDL_CreateMutex();
 	grphInfo->resize = NULL;
 	return grphInfo;
@@ -65,22 +66,47 @@ int init_port(data* grphInfo) {
 	return 0;
 }
 
-Slider* init_slider(Uint8 initPosition, Uint8 numOfPositions, Uint32 height, Uint32 upperLeftX, Uint32 upperLeftY) {
+Slider* init_slider(Uint8 initPosition, Uint8 numOfPositions, Uint32 height, Uint32 upperLeftX, Uint32 upperLeftY, TTF_Font* font, SDL_Renderer* ren, int num, ...) {
+	va_list valist;
+	va_start(valist, num);
+	SDL_Surface* surface;
+	SDL_Color black = { 0, 0, 0 };
+
 	Slider* slider = malloc(sizeof(Slider));
 	slider->move = 0;
 	slider->position = initPosition;
 	slider->numOfPositions = numOfPositions;
 	slider->spaceBetweenPositions = height / (slider->numOfPositions - 1);
 
-	slider->slideRailRectangle.x = upperLeftX;
-	slider->slideRailRectangle.y = upperLeftY;
+	//slider->slideRailRectangle.x = upperLeftX;
+	//slider->slideRailRectangle.y = upperLeftY;
 	slider->slideRailRectangle.h = height;
 	slider->slideRailRectangle.w = 8;
 
 	slider->sliderArrowRectangle.h = 15;
 	slider->sliderArrowRectangle.w = 20;
-	slider->sliderArrowRectangle.x = slider->slideRailRectangle.x - (int)(slider->sliderArrowRectangle.w / 2);
-	slider->sliderArrowRectangle.y = slider->slideRailRectangle.y + (slider->spaceBetweenPositions * slider->position) - (int)(slider->sliderArrowRectangle.h / 2);
+	//slider->sliderArrowRectangle.x = slider->slideRailRectangle.x - (int)(slider->sliderArrowRectangle.w / 2);
+	//slider->sliderArrowRectangle.y = slider->slideRailRectangle.y + (slider->spaceBetweenPositions * slider->position) - (int)(slider->sliderArrowRectangle.h / 2);
+	
+	slider->labelChars = malloc(sizeof(char*) * slider->numOfPositions);
+	slider->labelTextures = malloc(sizeof(SDL_Texture*) * slider->numOfPositions);
+	slider->labelRects = malloc(sizeof(SDL_Rect*) * slider->numOfPositions);
+
+	slider->fontHeight = TTF_FontHeight(font);
+
+	for (int i = 0; i <= slider->numOfPositions; i++) {
+		slider->labelChars[i] = va_arg(valist, char*);
+		if (!(surface = TTF_RenderUTF8_Blended(font, slider->labelChars[i], black)))
+			return NULL;
+		slider->labelTextures[i] = SDL_CreateTextureFromSurface(ren, surface);
+		slider->labelRects[i] = malloc(sizeof(SDL_Rect));
+		slider->labelRects[i]->w = strlen(slider->labelChars[i]) * ((slider->fontHeight / 2) + 1);
+		slider->labelRects[i]->h = slider->fontHeight;
+	}
+	va_end(valist);
+
+	//set position of slider
+	Slider_UpdatePosition(upperLeftX, upperLeftY, slider);
 	return slider;
 }
 

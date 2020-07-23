@@ -11,6 +11,9 @@ int main(int argc, char** argv) {
 	Uint8 hasRun = 0;
 	int Status;
 	void* pointer = NULL;
+	int i;
+	SDL_Color black = { 0, 0, 0 };
+	SDL_Surface* surface;
 
 	//variables to keep track of threads
 	SDL_Thread* gatherThread;
@@ -31,19 +34,21 @@ int main(int argc, char** argv) {
 	Textures* textures = init_Textures(basePath, ren);		//load textures
 
 	pointer = BitsNBobs_append(basePath, "Resources\\freefont-20120503\\FreeMonoBold.ttf");		//load font
-	TTF_Font* font = TTF_OpenFont(pointer, 12);
+	TTF_Font* font = TTF_OpenFont(pointer, 14);
 	free(pointer);
 	if (font == NULL)
 		return 34;
 
+
 	data* grphInfo = init_data();
+	if (grphInfo->port == INVALID_HANDLE_VALUE)
+		return 64;
 	data* grphInfoCPY = malloc(sizeof(data));
 	init_dataCopy(grphInfo, grphInfoCPY);
-	if (grphInfo == NULL)
-		return 64;
+
 
 	/*initialize gui elements*/
-	Slider* timeSlide = init_slider(0, 10, 200, (width - 50), 50);
+	Slider* timeSlide = init_slider(0, 10, 200, (width - 50), 50, font, ren, 11, "time/Div", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
 
 	/*start first data colection*/
 	SDL_UnlockMutex(grphInfo->Mutex);
@@ -119,7 +124,7 @@ int main(int argc, char** argv) {
 		SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
 		SDL_RenderClear(ren);
 		/*render any and all GUI elements other than graph*/
-		Slider_Render(ren, textures, timeSlide);
+		Slider_Render(ren, textures, timeSlide, font);
 		/*render graph*/
 		graph_Update(grphInfoCPY, ren);
 		SDL_RenderPresent(ren);
