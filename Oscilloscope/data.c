@@ -20,6 +20,7 @@ int data_Gather(data* grphInfo) {
 			math = ReadFile(grphInfo->port, &file_rBuf, sizeof(char), &NumBytesRead, NULL);		//returns 0 when no chars left to read, will store one more point, we'll ignore it later
 			if (!math) {
 				error = GetLastError();
+				grphInfo->readSuccess = 0;
 				SDL_UnlockMutex(grphInfo->Mutex);
 				return 1;
 			}
@@ -38,6 +39,7 @@ int data_Gather(data* grphInfo) {
 		if (!NumBytesRead || i == 10)
 			j--;
 	}
+	grphInfo->readSuccess = 1;
 	SDL_UnlockMutex(grphInfo->Mutex);
 	return 0;
 }
@@ -58,7 +60,7 @@ void data_copy(data* grphInfo, data* grphInfoCPY) {
 	grphInfo->graphHeight = grphInfoCPY->graphHeight;
 	grphInfo->graphWidth = grphInfoCPY->graphWidth;
 	grphInfoCPY->valueMax = grphInfo->valueMax;
-	for (int i = 0; i < grphInfo->numOfPoints && i < grphInfoCPY->numOfPoints; i++) {
+	for (Uint16 i = 0; i < grphInfo->numOfPoints && i < grphInfoCPY->numOfPoints; i++) {
 		grphInfoCPY->points[i].y = grphInfo->points[i].y;
 		grphInfoCPY->points[i].x = grphInfo->points[i].x;
 	}

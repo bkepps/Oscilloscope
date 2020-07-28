@@ -19,6 +19,7 @@ typedef struct {
 	HANDLE port;
 	SDL_mutex* Mutex;
 	Uint8 resize;			//BOOL, true if points* needs to be resized
+	Uint8 readSuccess;		//BOOL, true if port accessed successfully
 } data;
 
 /*
@@ -46,7 +47,7 @@ typedef struct {
 } Textures;
 
 //BitsNBobs.c
-const char* BitsNBobs_append(const char* orgin, const char* toAppend);
+const char* BitsNBobs_append(const char* orgin, char* toAppend);
 
 int BitsNBobs_mapTo(int x, int inMin, int inMax, int outMin, int outMax);
 
@@ -58,10 +59,10 @@ copies points to grphInfoCPY, copies numOfPoints, height, width, and valueMax to
 */
  void data_copy(data* grphInfo, data* grphInfoCPY);
 
- //int data_Process(data_raw* rawData, data_processed* processedData);
-
 //graph.c
  void graph_Update(data* grphInfo, SDL_Renderer* ren);
+
+ //guiUpdate.c
 
 //init.c
  data* init_data();

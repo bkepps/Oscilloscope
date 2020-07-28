@@ -1,6 +1,6 @@
 #include "MainHead.h"
 /*ideal for getting path of a file, set orgin to SDL_GetBasePath(), and for toAppend give hard coded string*/
-const char* BitsNBobs_append(const char* orgin, const char* toAppend) {
+const char* BitsNBobs_append(const char* orgin, char* toAppend) {
 	int orginSize = strlen(orgin);
 	int toAppendSize = strlen(toAppend);
 	char* dest = malloc(sizeof(char) * (orginSize + toAppendSize + 1));

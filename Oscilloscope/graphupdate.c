@@ -10,9 +10,11 @@ void graph_Update(data* data, SDL_Renderer* ren) {
 	SDL_SetRenderDrawColor(ren, 200, 200, 200, 255);
 	/*creates darker horizontal line every 1V with 10-bit 0-5V adc*/
 	for (j = data->graphHeight; j >= 0; j -= hDiv10) {
+#pragma warning( suppress : 4244 )
 		SDL_RenderDrawLine(ren, 0, j, (data->graphWidth), j);
 	}
 	/*creates darker vertical lines every 50 points*/
+#pragma warning( suppress : 4244 )
 	for (i = 0; i <= (data->graphWidth); i += wDiv10) {
 		SDL_RenderDrawLine(ren, i, 0, i, data->graphHeight);
 	}

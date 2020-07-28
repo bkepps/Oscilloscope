@@ -23,6 +23,7 @@ int Slider_Render(SDL_Renderer *ren, Textures* textures, Slider* slide, TTF_Font
 	SDL_RenderCopy(ren, textures->sliderRail, NULL, &(slide->slideRailRectangle));
 	SDL_RenderCopy(ren, textures->sliderArrow, NULL, &(slide->sliderArrowRectangle));
 
+	//render labels
 	for(int i = 0; i <= slide->numOfPositions; i++)
 		SDL_RenderCopy(ren, slide->labelTextures[i], NULL, slide->labelRects[i]);
 
@@ -38,10 +39,12 @@ Uint8 Slider_UpdatePosition(Uint32 upperLeftX, Uint32 upperLeftY, Slider* slide)
 		slide->slideRailRectangle.y = upperLeftY;
 		slide->sliderArrowRectangle.y = slide->slideRailRectangle.y + (slide->spaceBetweenPositions * slide->position) - (int)(slide->sliderArrowRectangle.h / 2);
 	}	
-	//update labels positions
+	//update label's positions
+	//title
 	slide->labelRects[0]->x = slide->slideRailRectangle.x - ((strlen(slide->labelChars[0]) / 2) * slide->fontHeight / 2) - 1;
 	slide->labelRects[0]->y = slide->slideRailRectangle.y - slide->fontHeight - 10;
 
+	//position labels
 	for (int i = 1; i <= slide->numOfPositions; i++) {
 		slide->labelRects[i]->x = slide->sliderArrowRectangle.x - 4 - (slide->fontHeight / 2) * strlen(slide->labelChars[i]);
 		slide->labelRects[i]->y = ((i - 1) * slide->spaceBetweenPositions) - (slide->fontHeight / 2) + slide->slideRailRectangle.y;

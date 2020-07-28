@@ -11,7 +11,6 @@ int main(int argc, char** argv) {
 	Uint8 hasRun = 0;
 	int Status;
 	void* pointer = NULL;
-	int i;
 	SDL_Color black = { 0, 0, 0 };
 	SDL_Surface* surface;
 
@@ -28,7 +27,8 @@ int main(int argc, char** argv) {
 	*windowID = SDL_GetWindowID(win);
 	
 	/*initialize SDL_TTF*/
-	TTF_Init();
+	if (TTF_Init())
+		return 1232;
 
 	/*initialize structs and stuff*/
 	Textures* textures = init_Textures(basePath, ren);		//load textures
@@ -39,10 +39,9 @@ int main(int argc, char** argv) {
 	if (font == NULL)
 		return 34;
 
-
 	data* grphInfo = init_data();
 	if (grphInfo->port == INVALID_HANDLE_VALUE)
-		return 64;
+		grphInfo->readSuccess = 0;
 	data* grphInfoCPY = malloc(sizeof(data));
 	init_dataCopy(grphInfo, grphInfoCPY);
 
@@ -64,7 +63,7 @@ int main(int argc, char** argv) {
 				break;
 			case SDL_WINDOWEVENT:
 				switch (event.window.event) {
-				case SDL_WINDOWEVENT_SIZE_CHANGED:
+				case SDL_WINDOWEVENT_RESIZED:
 					width = event.window.data1;
 					height = event.window.data2;
 
@@ -84,7 +83,37 @@ int main(int argc, char** argv) {
 						return 98;
 					grphInfoCPY->resize = 1;
 					break;
+				case SDL_WINDOWEVENT_SIZE_CHANGED:
+					width = event.window.data1;
+					height = event.window.data2;
+
+					/* update all elements who's position is changed by a window resize */
+					Slider_UpdatePosition(width - 50, (Uint32)NULL, timeSlide);
+					grphInfoCPY->graphHeight = 3 * (height / 4);
+					grphInfoCPY->graphHeight = grphInfoCPY->graphHeight - (grphInfoCPY->graphHeight % 10);
+					grphInfoCPY->graphWidth = 3 * (width / 4);
+					grphInfoCPY->graphWidth = grphInfoCPY->graphWidth - (grphInfoCPY->graphWidth % 10);
+					grphInfoCPY->numOfPoints = grphInfoCPY->graphWidth + 20;
+					//meke sure realloc doesn't return NULL
+					pointer = NULL;
+					pointer = realloc(grphInfoCPY->points, sizeof(SDL_Point) * grphInfoCPY->numOfPoints);
+					if (pointer != NULL)
+						grphInfoCPY->points = pointer;
+					else
+						return 98;
+					grphInfoCPY->resize = 1;
+
+
+					break;
+
 				}
+				SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+				SDL_RenderClear(ren);
+				/*render any and all GUI elements other than graph*/
+				Slider_Render(ren, textures, timeSlide, font);
+				/*render graph*/
+				graph_Update(grphInfoCPY, ren);
+				SDL_RenderPresent(ren);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				if (event.button.button == SDL_BUTTON_LEFT) {
@@ -94,7 +123,13 @@ int main(int argc, char** argv) {
 						timeSlide->move = 1;
 				}
 				break;
+			case SDL_FINGERDOWN:
+				mousePos.x = event.tfinger.x;
+				mousePos.y = event.tfinger.y;
 
+				if (SDL_PointInRect(&mousePos, &timeSlide->slideRailRectangle) || SDL_PointInRect(&mousePos, &timeSlide->sliderArrowRectangle))
+					timeSlide->move = 1;
+				break;
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == SDL_BUTTON_LEFT) {
 					SDL_GetMouseState(&mousePos.x, &mousePos.y);
@@ -105,18 +140,37 @@ int main(int argc, char** argv) {
 					}
 				}
 				break;
+			case SDL_FINGERUP:
+				event.tfinger.x = mousePos.x;
+				event.tfinger.y = mousePos.y;
 
+				/*if a slider motion event is occuring, and the finger goes up, end move event, and set final position*/
+				if (timeSlide->move) {
+					timeSlide->move = 0;
+					Slider_MoveWithMouse(mousePos, timeSlide);
+				}
+				break;
 			case SDL_MOUSEMOTION:
 				mousePos.y = event.motion.y;
 				/*if slider move event is underway, have slider arrow follow the mouse*/
 				if (timeSlide->move)
 					Slider_MoveWithMouse(mousePos, timeSlide);
 				break;
+			case SDL_FINGERMOTION:
+				mousePos.y += event.tfinger.dy;
+				/*if slider move event is underway, have slider arrow follow the finger*/
+				if (timeSlide->move)
+					Slider_MoveWithMouse(mousePos, timeSlide);
+				break;
 			}
+			
 
 		}
 		if (SDL_TryLockMutex(grphInfo->Mutex) == 0) {
-			data_copy(grphInfo, grphInfoCPY);
+			if (!grphInfo->readSuccess)
+				init_port(grphInfo);
+			else
+				data_copy(grphInfo, grphInfoCPY);
 			SDL_UnlockMutex(grphInfo->Mutex);
 			gatherThread = SDL_CreateThread(data_Gather, "gather", (void*)grphInfo);
 			SDL_DetachThread(gatherThread);

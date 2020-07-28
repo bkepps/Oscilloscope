@@ -9,9 +9,12 @@ data* init_data() {
 	grphInfo->numOfPoints = grphInfo->graphWidth + 20;
 	grphInfo->points = (SDL_Point*) malloc(sizeof(SDL_Point) * grphInfo->numOfPoints);
 	grphInfo->valueMax = 1023;
-	init_port(grphInfo);
+	if (!init_port(grphInfo))
+		grphInfo->readSuccess = 1;
+	else
+		grphInfo->readSuccess = 0;
 	grphInfo->Mutex = SDL_CreateMutex();
-	grphInfo->resize = NULL;
+	grphInfo->resize = 0;
 	return grphInfo;
 }
 
@@ -23,7 +26,8 @@ void* init_dataCopy(data* grphInfo, data* grphInfoCPY) {
 	grphInfoCPY->valueMax = grphInfo->valueMax;
 	grphInfoCPY->port = NULL;
 	grphInfoCPY->Mutex = NULL;
-	for (int i = 0; i < grphInfo->numOfPoints; i++) {
+	grphInfoCPY->readSuccess = NULL;
+	for (Uint16 i = 0; i < grphInfo->numOfPoints; i++) {
 		grphInfoCPY->points[i].y = grphInfo->points[i].y;
 		grphInfoCPY->points[i].x = grphInfo->points[i].x;
 	}
@@ -94,6 +98,7 @@ Slider* init_slider(Uint8 initPosition, Uint8 numOfPositions, Uint32 height, Uin
 
 	slider->fontHeight = TTF_FontHeight(font);
 
+	//create textures containing text generated from string arguments and initialize rectangles to render them to
 	for (int i = 0; i <= slider->numOfPositions; i++) {
 		slider->labelChars[i] = va_arg(valist, char*);
 		if (!(surface = TTF_RenderUTF8_Blended(font, slider->labelChars[i], black)))
@@ -113,7 +118,7 @@ Slider* init_slider(Uint8 initPosition, Uint8 numOfPositions, Uint32 height, Uin
 Textures* init_Textures(const char* basePath, SDL_Renderer *ren) {
 	Textures* textures = malloc(sizeof(Textures));
 
-	const char* returnedFilePath = BitsNBobs_append(basePath, "Resources\\SliderArrow.bmp");			//load arrow for sliders to texture
+	char* returnedFilePath = BitsNBobs_append(basePath, "Resources\\SliderArrow.bmp");			//load arrow for sliders to texture
 	SDL_Surface* sliderArrowsurf = SDL_LoadBMP(returnedFilePath);
 	free(returnedFilePath);
 	textures->sliderArrow = SDL_CreateTextureFromSurface(ren, sliderArrowsurf);
