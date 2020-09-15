@@ -1,5 +1,41 @@
 // gathers one array of data from a serial port
 #include "MainHead.h"
+#include <math.h>
+
+#define PI 3.1415926535897932384626433832795028841971693993751058209749
+
+data* data_init() {
+	data* grphInfo = malloc(sizeof(data));
+	if (grphInfo == NULL)
+		return NULL;
+	grphInfo->graphHeight = 400;
+	grphInfo->graphWidth = 500;
+	grphInfo->numOfPoints = grphInfo->graphWidth + 20;
+	grphInfo->points = (SDL_Point*)malloc(sizeof(SDL_Point) * grphInfo->numOfPoints);
+	grphInfo->valueMax = 1023;
+	if (!init_port(grphInfo))
+		grphInfo->readSuccess = 1;
+	else
+		grphInfo->readSuccess = 0;
+	grphInfo->Mutex = SDL_CreateMutex();
+	grphInfo->resize = 0;
+	return grphInfo;
+}
+
+void* dataCopy_init(data* grphInfo, data* grphInfoCPY) {
+	grphInfoCPY->numOfPoints = grphInfo->numOfPoints;
+	grphInfoCPY->graphHeight = grphInfo->graphHeight;
+	grphInfoCPY->graphWidth = grphInfo->graphWidth;
+	grphInfoCPY->points = malloc(sizeof(SDL_Point) * grphInfo->numOfPoints);
+	grphInfoCPY->valueMax = grphInfo->valueMax;
+	grphInfoCPY->port = NULL;
+	grphInfoCPY->Mutex = NULL;
+	grphInfoCPY->readSuccess = NULL;
+	for (Uint16 i = 0; i < grphInfo->numOfPoints; i++) {
+		grphInfoCPY->points[i].y = grphInfo->points[i].y;
+		grphInfoCPY->points[i].x = grphInfo->points[i].x;
+	}
+}
 
 int data_Gather(data* grphInfo) {
 	SDL_LockMutex(grphInfo->Mutex);

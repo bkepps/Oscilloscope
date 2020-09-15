@@ -39,15 +39,13 @@ int main(int argc, char** argv) {
 	if (font == NULL)
 		return 34;
 
-	data* grphInfo = init_data();
-	if (grphInfo->port == INVALID_HANDLE_VALUE)
-		grphInfo->readSuccess = 0;
+	data* grphInfo = data_init();							//initialize channel 1 (arduino via serial port)
 	data* grphInfoCPY = malloc(sizeof(data));
-	init_dataCopy(grphInfo, grphInfoCPY);
+	dataCopy_init(grphInfo, grphInfoCPY);
 
 
 	/*initialize gui elements*/
-	Slider* timeSlide = init_slider(0, 10, 200, (width - 50), 50, font, ren, 11, "time/Div", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+	Slider* timeSlide = slider_init(0, 10, 200, (width - 50), 50, font, ren, 11, "time/Div", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
 
 	/*start first data colection*/
 	SDL_UnlockMutex(grphInfo->Mutex);
@@ -56,6 +54,7 @@ int main(int argc, char** argv) {
 	
 	/*enter window loop*/
 	while (!quit) {
+		//handle events
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:
@@ -69,6 +68,7 @@ int main(int argc, char** argv) {
 
 					/* update all elements who's position is changed by a window resize */
 					Slider_UpdatePosition(width - 50, (Uint32)NULL, timeSlide);
+
 					grphInfoCPY->graphHeight = 3 * (height / 4);
 					grphInfoCPY->graphHeight = grphInfoCPY->graphHeight - (grphInfoCPY->graphHeight % 10);
 					grphInfoCPY->graphWidth = 3 * (width / 4);
@@ -83,29 +83,6 @@ int main(int argc, char** argv) {
 						return 98;
 					grphInfoCPY->resize = 1;
 					break;
-				case SDL_WINDOWEVENT_SIZE_CHANGED:
-					width = event.window.data1;
-					height = event.window.data2;
-
-					/* update all elements who's position is changed by a window resize */
-					Slider_UpdatePosition(width - 50, (Uint32)NULL, timeSlide);
-					grphInfoCPY->graphHeight = 3 * (height / 4);
-					grphInfoCPY->graphHeight = grphInfoCPY->graphHeight - (grphInfoCPY->graphHeight % 10);
-					grphInfoCPY->graphWidth = 3 * (width / 4);
-					grphInfoCPY->graphWidth = grphInfoCPY->graphWidth - (grphInfoCPY->graphWidth % 10);
-					grphInfoCPY->numOfPoints = grphInfoCPY->graphWidth + 20;
-					//meke sure realloc doesn't return NULL
-					pointer = NULL;
-					pointer = realloc(grphInfoCPY->points, sizeof(SDL_Point) * grphInfoCPY->numOfPoints);
-					if (pointer != NULL)
-						grphInfoCPY->points = pointer;
-					else
-						return 98;
-					grphInfoCPY->resize = 1;
-
-
-					break;
-
 				}
 				SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
 				SDL_RenderClear(ren);
@@ -166,6 +143,7 @@ int main(int argc, char** argv) {
 			
 
 		}
+		//check if data update is complete, if yes handle it and start a new collection
 		if (SDL_TryLockMutex(grphInfo->Mutex) == 0) {
 			if (!grphInfo->readSuccess)
 				init_port(grphInfo);
@@ -175,6 +153,7 @@ int main(int argc, char** argv) {
 			gatherThread = SDL_CreateThread(data_Gather, "gather", (void*)grphInfo);
 			SDL_DetachThread(gatherThread);
 		}
+		//render stuff
 		SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
 		SDL_RenderClear(ren);
 		/*render any and all GUI elements other than graph*/
