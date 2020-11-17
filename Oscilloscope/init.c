@@ -2,7 +2,7 @@
 
 int init_port(data* grphInfo) {
 	/*open serial port*/
-	grphInfo->port = CreateFile(L"COM4",                  // Name of the Port to be Opened
+	grphInfo->port = CreateFile(L"COM6",                  // Name of the Port to be Opened
 		GENERIC_READ,							// Read Access
 		0,                            // No Sharing, ports cant be shared
 		NULL,                         // No Security
