@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 	if (font == NULL)
 		return 34;
 
-	data* grphInfo = data_init();							//initialize channel 1 (arduino via serial port)
+	data* grphInfo = serial_dataInit();							//initialize channel 1 (arduino via serial port)
 	data* grphInfoCPY = malloc(sizeof(data));
 	dataCopy_init(grphInfo, grphInfoCPY);
 
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 
 	/*start first data colection*/
 	SDL_UnlockMutex(grphInfo->Mutex);
-	gatherThread = SDL_CreateThread(data_Gather, "Gather", (void*)grphInfo);
+	gatherThread = SDL_CreateThread(serial_gather, "Gather", (void*)grphInfo);
 	SDL_DetachThread(gatherThread);
 	
 	/*enter window loop*/
@@ -145,11 +145,11 @@ int main(int argc, char** argv) {
 		//check if data update is complete, if yes handle it and start a new collection
 		if (SDL_TryLockMutex(grphInfo->Mutex) == 0) {
 			if (!grphInfo->readSuccess)
-				init_port(grphInfo);
+				serial_init(grphInfo);
 			else
 				data_copy(grphInfo, grphInfoCPY);
 			SDL_UnlockMutex(grphInfo->Mutex);
-			gatherThread = SDL_CreateThread(data_Gather, "gather", (void*)grphInfo);
+			gatherThread = SDL_CreateThread(serial_gather, "gather", (void*)grphInfo);
 			SDL_DetachThread(gatherThread);
 		}
 		//render stuff

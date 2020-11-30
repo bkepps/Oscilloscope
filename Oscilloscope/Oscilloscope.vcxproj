@@ -145,9 +145,9 @@
     <ClCompile Include="BitsNBobs.c" />
     <ClCompile Include="data.c" />
     <ClCompile Include="graphupdate.c" />
-    <ClCompile Include="init.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="render.c" />
+    <ClCompile Include="Serial.c" />
     <ClCompile Include="Slider.c" />
   </ItemGroup>
   <ItemGroup>

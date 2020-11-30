@@ -22,6 +22,7 @@ typedef struct {
 	SDL_mutex* Mutex;
 	Uint8 resize;			//BOOL, true if points* needs to be resized
 	Uint8 readSuccess;		//BOOL, true if port accessed successfully
+	char channelType;		//S = serial
 } data;
 
 
@@ -35,25 +36,22 @@ typedef struct {
 }infoBar;
 
 //data.c
-data* data_init();
 
 void* dataCopy_init(data* grphInfo, data* grphInfoCPY);
 
- int data_Gather(data* grphInfo);
-
- /*
-copies points to grphInfoCPY, copies numOfPoints, height, width, and valueMax to grphInfo
-*/
+	//copies points to grphInfoCPY, copies numOfPoints, height, width, and valueMax to grphInfo
  void data_copy(data* grphInfo, data* grphInfoCPY);
 
 //graph.c
+
  void graph_Update(data* grphInfo, SDL_Renderer* ren);
 
-//init.c
-
- int init_port(data* grphInfo);
-
  //render.c
+
  int renderInfobar(Uint32 width, Uint32 height);
 
+ //Serial.c
 
+ data* serial_dataInit();
+ int serial_init(data* grphInfo);
+ int serial_gather(data* grphInfo);
