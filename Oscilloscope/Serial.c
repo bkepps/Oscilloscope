@@ -91,8 +91,6 @@ int serial_gather(data* grphInfo) {
 			i++;
 		} while (!end);
 		/*convert data_buf to int. atoi ignores \r at end of string*/
-		//data->points[pointCurrent].y = data->graphHeight - (atoi(dataBuf) * ((float) data->graphHeight / (float) data->valueMax));
-		//data->points[pointCurrent].x = pointCurrent;
 		grphInfo->points[j].y = grphInfo->graphHeight - BitsNBobs_mapTo(atoi(dataBuf), 0, grphInfo->valueMax, 0, grphInfo->graphHeight);
 		grphInfo->points[j].x = j;
 		if (!NumBytesRead || i == 10)
