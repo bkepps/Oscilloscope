@@ -9,7 +9,6 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	SDL_Point mousePos;
 	Uint8 hasRun = 0;
-	int Status;
 	void* pointer = NULL;
 	SDL_Color black = { 0, 0, 0 };
 	SDL_Surface* surface;
@@ -118,8 +117,8 @@ int main(int argc, char** argv) {
 				}
 				break;
 			case SDL_FINGERUP:
-				event.tfinger.x = mousePos.x;
-				event.tfinger.y = mousePos.y;
+				mousePos.x = event.tfinger.x;
+				mousePos.y = event.tfinger.y;
 
 				/*if a slider motion event is occuring, and the finger goes up, end move event, and set final position*/
 				if (timeSlide->move) {
@@ -139,9 +138,9 @@ int main(int argc, char** argv) {
 				if (timeSlide->move)
 					Slider_MoveWithMouse(mousePos, timeSlide);
 				break;
+			default:
+				break;
 			}
-			
-
 		}
 		//check if data update is complete, if yes handle it and start a new collection
 		if (SDL_TryLockMutex(grphInfo->Mutex) == 0) {
