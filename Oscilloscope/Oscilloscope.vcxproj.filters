@@ -41,5 +41,8 @@
     <ClInclude Include="MainHead.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Slider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

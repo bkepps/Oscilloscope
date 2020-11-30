@@ -1,5 +1,6 @@
 #include "MainHead.h"
 
+
 int init_port(data* grphInfo) {
 	/*open serial port*/
 	grphInfo->port = CreateFile(L"COM6",                  // Name of the Port to be Opened
@@ -35,22 +36,4 @@ int init_port(data* grphInfo) {
 	if (!SetCommTimeouts(grphInfo->port, &timeouts))
 		return 4;
 	return 0;
-}
-
-Textures* init_Textures(const char* basePath, SDL_Renderer *ren) {
-	Textures* textures = malloc(sizeof(Textures));
-
-	char* returnedFilePath = BitsNBobs_append(basePath, "Resources\\SliderArrow.bmp");			//load arrow for sliders to texture
-	SDL_Surface* sliderArrowsurf = SDL_LoadBMP(returnedFilePath);
-	free(returnedFilePath);
-	textures->sliderArrow = SDL_CreateTextureFromSurface(ren, sliderArrowsurf);
-	SDL_FreeSurface(sliderArrowsurf);
-
-	returnedFilePath = BitsNBobs_append(basePath, "Resources\\SliderRail.bmp");				//load rail arrow slides on
-	SDL_Surface* sliderRailsurf = SDL_LoadBMP(returnedFilePath);
-	free((void*)returnedFilePath);
-	textures->sliderRail = SDL_CreateTextureFromSurface(ren, sliderRailsurf);
-	SDL_FreeSurface(sliderRailsurf);
-
-	return textures;
 }

@@ -1,5 +1,23 @@
 #include "MainHead.h"
 
+slideTextures* init_Textures(const char* basePath, SDL_Renderer* ren) {
+	slideTextures* textures = malloc(sizeof(slideTextures));
+
+	char* returnedFilePath = BitsNBobs_append(basePath, "Resources\\SliderArrow.bmp");			//load arrow for sliders to texture
+	SDL_Surface* sliderArrowsurf = SDL_LoadBMP(returnedFilePath);
+	free(returnedFilePath);
+	textures->sliderArrow = SDL_CreateTextureFromSurface(ren, sliderArrowsurf);
+	SDL_FreeSurface(sliderArrowsurf);
+
+	returnedFilePath = BitsNBobs_append(basePath, "Resources\\SliderRail.bmp");				//load rail arrow slides on
+	SDL_Surface* sliderRailsurf = SDL_LoadBMP(returnedFilePath);
+	free((void*)returnedFilePath);
+	textures->sliderRail = SDL_CreateTextureFromSurface(ren, sliderRailsurf);
+	SDL_FreeSurface(sliderRailsurf);
+
+	return textures;
+}
+
 Slider* slider_init(Uint8 initPosition, Uint8 numOfPositions, Uint32 height, Uint32 upperLeftX, Uint32 upperLeftY, TTF_Font* font, SDL_Renderer* ren, int num, ...) {
 	va_list valist;
 	va_start(valist, num);
@@ -64,7 +82,7 @@ int Slider_MoveWithMouse(SDL_Point mousePos, Slider* slide) {
 	return 0;
 }
 
-int Slider_Render(SDL_Renderer *ren, Textures* textures, Slider* slide, TTF_Font* font) {
+int Slider_Render(SDL_Renderer *ren, slideTextures* textures, Slider* slide, TTF_Font* font) {
 	SDL_RenderCopy(ren, textures->sliderRail, NULL, &(slide->slideRailRectangle));
 	SDL_RenderCopy(ren, textures->sliderArrow, NULL, &(slide->sliderArrowRectangle));
 

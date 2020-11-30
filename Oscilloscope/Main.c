@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 		return 1232;
 
 	/*initialize structs and stuff*/
-	Textures* textures = init_Textures(basePath, ren);		//load textures
+	slideTextures* textures = init_Textures(basePath, ren);		//load textures for the sliders
 
 	pointer = BitsNBobs_append(basePath, "Resources\\freefont-20120503\\FreeMonoBold.ttf");		//load font
 	TTF_Font* font = TTF_OpenFont(pointer, 14);
