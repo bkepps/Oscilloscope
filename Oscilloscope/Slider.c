@@ -1,4 +1,4 @@
-#include "MainHead.h"
+#include "Slider.h"
 
 slideTextures* init_Textures(const char* basePath, SDL_Renderer* ren) {
 	slideTextures* textures = malloc(sizeof(slideTextures));
