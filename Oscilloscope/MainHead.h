@@ -6,6 +6,7 @@
 #include <stdarg.h>
 
 #include "slider.h"
+#include "BitsNBobs.h"
 
 /*
 struct that stores one set of points and related data
@@ -32,11 +33,6 @@ typedef struct {
 	Uint32 width;
 	Uint32 height;
 }infoBar;
-
-//BitsNBobs.c
-const char* BitsNBobs_append(const char* orgin, char* toAppend);
-
-int BitsNBobs_mapTo(int x, int inMin, int inMax, int outMin, int outMax);
 
 //data.c
 data* data_init();

@@ -1,4 +1,4 @@
-#include "MainHead.h"
+#include "BitsNBobs.h"
 
 #pragma warning(disable : 4996)
 
@@ -15,15 +15,9 @@ const char* BitsNBobs_append(const char* orgin, char* toAppend) {
 		return (const char*)dest;
 	}
 	else {
+		//malloc failed, but I don't have any proper logging happening in here, so it returns f
 		return "f";
-	}
-	/*while (orgin[i] != '\0')
-		dest[i] = orgin[i++];
-	i = 0;
-	while(toAppend[i] != '\0')
-		dest[orginSize + i] = toAppend[i++];
-	dest[orginSize + toAppendSize] = '\0';*/
-	
+	}	
 }
 
 int BitsNBobs_mapTo(int x, int inMin, int inMax, int outMin, int outMax) {

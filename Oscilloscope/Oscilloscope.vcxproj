@@ -151,6 +151,7 @@
     <ClCompile Include="Slider.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BitsNBobs.h" />
     <ClInclude Include="MainHead.h" />
     <ClInclude Include="Slider.h" />
   </ItemGroup>
