@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="BitsNBobs.c" />
     <ClCompile Include="data.c" />
+    <ClCompile Include="Demo.c" />
     <ClCompile Include="graphupdate.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="render.c" />
