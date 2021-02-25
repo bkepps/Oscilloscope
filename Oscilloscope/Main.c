@@ -32,6 +32,12 @@ int main(int argc, char** argv) {
 	/*initialize structs and stuff*/
 	slideTextures* textures = init_Textures(basePath, ren);		//load textures for the sliders
 
+	color* bColor = malloc(sizeof(color));						//background color, used when clearing screen
+	bColor->r = 235;
+	bColor->g = 235;
+	bColor->b = 235;
+	bColor->a = 255;
+
 	pointer = BitsNBobs_append(basePath, "Resources\\freefont-20120503\\FreeMonoBold.ttf");		//load font
 	TTF_Font* font = TTF_OpenFont(pointer, 14);
 	free(pointer);
@@ -83,7 +89,7 @@ int main(int argc, char** argv) {
 					grphInfoCPY->resize = 1;
 					break;
 				}
-				SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+				SDL_SetRenderDrawColor(ren, bColor->r, bColor->g, bColor->b, bColor->a);
 				SDL_RenderClear(ren);
 				/*render any and all GUI elements other than graph*/
 				Slider_Render(ren, textures, timeSlide, font);
@@ -153,7 +159,7 @@ int main(int argc, char** argv) {
 			SDL_DetachThread(gatherThread);
 		}
 		//render stuff
-		SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+		SDL_SetRenderDrawColor(ren, bColor->r, bColor->g, bColor->b, bColor->a);
 		SDL_RenderClear(ren);
 		/*render any and all GUI elements other than graph*/
 		Slider_Render(ren, textures, timeSlide, font);
