@@ -31,7 +31,7 @@ typedef struct {
 slideTextures* init_Textures(const char* basePath, SDL_Renderer* ren);
 
  //initPosition = position slider starts on, numOfPositions = total # of positions, height is # of pixels from top to bottom of slide rail, upperLeftX & upperLeftY are x and y coords of upper left corner of slide rail, font is font used for labels, ren is an SDL_renderer*, num is the number of labels including the title, after that do one string per label with the first one being the title
-	Slider * slider_init(Uint8 initPosition, Uint8 numOfPositions, Uint32 height, Uint32 upperLeftX, Uint32 upperLeftY, TTF_Font * font, SDL_Renderer * ren, int num, ...);
+Slider * slider_init(Uint8 initPosition, Uint8 numOfPositions, Uint32 height, Uint32 upperLeftX, Uint32 upperLeftY, TTF_Font * font, SDL_Renderer * ren, int num, ...);
 
 /*call to move slider, not necessarilly with mouse, it just needs a point*/
 int Slider_MoveWithMouse(SDL_Point, Slider*);

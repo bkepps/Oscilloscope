@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
 					grphInfoCPY->graphWidth = 3 * (width / 4);
 					grphInfoCPY->graphWidth = grphInfoCPY->graphWidth - (grphInfoCPY->graphWidth % 10);
 					grphInfoCPY->numOfPoints = grphInfoCPY->graphWidth + 20;
-					//meke sure realloc doesn't return NULL
+					//make sure realloc doesn't return NULL
 					pointer = NULL;
 					pointer = realloc(grphInfoCPY->points, sizeof(SDL_Point) * grphInfoCPY->numOfPoints);
 					if (pointer != NULL)
