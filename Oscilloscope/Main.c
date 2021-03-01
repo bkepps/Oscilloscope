@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 	if (font == NULL)
 		return 34;
 
-	data* grphInfo = serial_dataInit();							//initialize channel 1 (arduino via serial port)
+	data* grphInfo = demo_dataInit();							//initialize channel 1 (Demo sine wave)
 	data* grphInfoCPY = malloc(sizeof(data));
 	dataCopy_init(grphInfo, grphInfoCPY);
 
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 
 	/*start first data colection*/
 	SDL_UnlockMutex(grphInfo->Mutex);
-	gatherThread = SDL_CreateThread(serial_gather, "Gather", (void*)grphInfo);
+	gatherThread = SDL_CreateThread(demo_gather, "Gather", (void*)grphInfo);
 	SDL_DetachThread(gatherThread);
 	
 	/*enter window loop*/
@@ -151,11 +151,11 @@ int main(int argc, char** argv) {
 		//check if data update is complete, if yes handle it and start a new collection
 		if (SDL_TryLockMutex(grphInfo->Mutex) == 0) {
 			if (!grphInfo->readSuccess)
-				serial_init(grphInfo);
+				return 987;
 			else
 				data_copy(grphInfo, grphInfoCPY);
 			SDL_UnlockMutex(grphInfo->Mutex);
-			gatherThread = SDL_CreateThread(serial_gather, "gather", (void*)grphInfo);
+			gatherThread = SDL_CreateThread(demo_gather, "gather", (void*)grphInfo);
 			SDL_DetachThread(gatherThread);
 		}
 		//render stuff
@@ -171,6 +171,6 @@ int main(int argc, char** argv) {
 		//wait for gather thread to complete before quitting to avoid memory access error
 
 	SDL_Quit();
-	CloseHandle(grphInfo->port);//Close the Serial Port 
+	//CloseHandle(grphInfo->port);//Close the Serial Port 
 	return 0;
 }
