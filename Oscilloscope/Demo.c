@@ -19,5 +19,11 @@ data* demo_dataInit() {
 }
 
 int demo_gather(data* grphInfo) {
-
+	SDL_LockMutex(grphInfo->Mutex);
+	for (int i = 0; i < grphInfo->numOfPoints; i++) {
+		grphInfo->points->x = i;
+		grphInfo->points->y = sin(2 * PI * i);
+	}
+	grphInfo->readSuccess = 1;
+	SDL_UnlockMutex(grphInfo->Mutex);
 }

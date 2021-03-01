@@ -51,6 +51,10 @@ void* dataCopy_init(data* grphInfo, data* grphInfoCPY);
 	//copies points to grphInfoCPY, copies numOfPoints, height, width, and valueMax to grphInfo
  void data_copy(data* grphInfo, data* grphInfoCPY);
 
+//Demo.c
+ data* demo_dataInit();
+ int demo_gather(data* grphinfo);
+
 //graph.c
 
  void graph_Update(data* grphInfo, SDL_Renderer* ren);
