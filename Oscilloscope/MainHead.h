@@ -58,6 +58,7 @@ void* dataCopy_init(data* grphInfo, data* grphInfoCPY);
 //graph.c
 
  void graph_Update(data* grphInfo, SDL_Renderer* ren);
+ int graph_updateScale(data* grphInfo, Slider* slider);				//update scale of graph from slider struct
 
  //render.c
 

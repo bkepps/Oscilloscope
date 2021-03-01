@@ -29,3 +29,7 @@ void graph_Update(data* data, SDL_Renderer* ren) {
 	/*plot data points and connect them*/
 	SDL_RenderDrawLines(ren, data->points, data->graphWidth);
 }
+
+int graph_updateScale(data* grphInfo, Slider* slider) {
+
+}

@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
 
 	/*initialize gui elements*/
 	Slider* timeSlide = slider_init(0, 10, 200, (width - 50), 50, font, ren, 11, "time/Div", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+	Slider* vertSlide = slider_init(0, 5, 200, (width - 50), 300, font, ren, 6, "volts/Div", "10", "5", "1", "0.5", "0.1");
 
 	/*start first data colection*/
 	SDL_UnlockMutex(grphInfo->Mutex);
@@ -73,6 +74,7 @@ int main(int argc, char** argv) {
 
 					/* update all elements who's position is changed by a window resize */
 					Slider_UpdatePosition(width - 50, (Uint32)NULL, timeSlide);
+					Slider_UpdatePosition(width - 50, (Uint32)NULL, vertSlide);
 
 					grphInfoCPY->graphHeight = 3 * (height / 4);
 					grphInfoCPY->graphHeight = grphInfoCPY->graphHeight - (grphInfoCPY->graphHeight % 10);
@@ -93,6 +95,7 @@ int main(int argc, char** argv) {
 				SDL_RenderClear(ren);
 				/*render any and all GUI elements other than graph*/
 				Slider_Render(ren, textures, timeSlide, font);
+				Slider_Render(ren, textures, vertSlide, font);
 				/*render graph*/
 				graph_Update(grphInfoCPY, ren);
 				SDL_RenderPresent(ren);
@@ -103,6 +106,8 @@ int main(int argc, char** argv) {
 					/*if the left mouse button is pushed down while over the slider rail or arrow, begin slider move event*/
 					if (SDL_PointInRect(&mousePos, &timeSlide->slideRailRectangle) || SDL_PointInRect(&mousePos, &timeSlide->sliderArrowRectangle))
 						timeSlide->move = 1;
+					if (SDL_PointInRect(&mousePos, &vertSlide->slideRailRectangle) || SDL_PointInRect(&mousePos, &vertSlide->sliderArrowRectangle))
+						vertSlide->move = 1;
 				}
 				break;
 			case SDL_FINGERDOWN:
@@ -111,6 +116,8 @@ int main(int argc, char** argv) {
 
 				if (SDL_PointInRect(&mousePos, &timeSlide->slideRailRectangle) || SDL_PointInRect(&mousePos, &timeSlide->sliderArrowRectangle))
 					timeSlide->move = 1;
+				if (SDL_PointInRect(&mousePos, &vertSlide->slideRailRectangle) || SDL_PointInRect(&mousePos, &vertSlide->sliderArrowRectangle))
+					vertSlide->move = 1;
 				break;
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == SDL_BUTTON_LEFT) {
@@ -119,6 +126,10 @@ int main(int argc, char** argv) {
 					if (timeSlide->move) {
 						timeSlide->move = 0;
 						Slider_MoveWithMouse(mousePos, timeSlide);
+					}
+					if (vertSlide->move) {
+						vertSlide->move = 0;
+						Slider_MoveWithMouse(mousePos, vertSlide);
 					}
 				}
 				break;
@@ -131,18 +142,26 @@ int main(int argc, char** argv) {
 					timeSlide->move = 0;
 					Slider_MoveWithMouse(mousePos, timeSlide);
 				}
+				if (vertSlide->move) {
+					vertSlide->move = 0;
+					Slider_MoveWithMouse(mousePos, vertSlide);
+				}
 				break;
 			case SDL_MOUSEMOTION:
 				mousePos.y = event.motion.y;
 				/*if slider move event is underway, have slider arrow follow the mouse*/
 				if (timeSlide->move)
 					Slider_MoveWithMouse(mousePos, timeSlide);
+				if (vertSlide->move)
+					Slider_MoveWithMouse(mousePos, vertSlide);
 				break;
 			case SDL_FINGERMOTION:
 				mousePos.y += event.tfinger.dy;
 				/*if slider move event is underway, have slider arrow follow the finger*/
 				if (timeSlide->move)
 					Slider_MoveWithMouse(mousePos, timeSlide);
+				if (vertSlide->move)
+					Slider_MoveWithMouse(mousePos, vertSlide);
 				break;
 			default:
 				break;
@@ -163,6 +182,7 @@ int main(int argc, char** argv) {
 		SDL_RenderClear(ren);
 		/*render any and all GUI elements other than graph*/
 		Slider_Render(ren, textures, timeSlide, font);
+		Slider_Render(ren, textures, vertSlide, font);
 		/*render graph*/
 		graph_Update(grphInfoCPY, ren);
 		SDL_RenderPresent(ren);

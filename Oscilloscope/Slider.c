@@ -64,21 +64,21 @@ Slider* slider_init(Uint8 initPosition, Uint8 numOfPositions, Uint32 height, Uin
 }
 
 int Slider_MoveWithMouse(SDL_Point mousePos, Slider* slide) {
-	int randcalc;
+	int posCalc;
 
-	randcalc = (mousePos.y - slide->slideRailRectangle.y) / slide->spaceBetweenPositions;
-	if (randcalc >= 0 && randcalc < slide->numOfPositions) {
-		slide->position = randcalc;
+	posCalc = (mousePos.y - slide->slideRailRectangle.y + (slide->spaceBetweenPositions / 2)) / slide->spaceBetweenPositions;
+	if (posCalc >= 0 && posCalc < slide->numOfPositions) {
+		slide->position = posCalc;
 	}
-	else if (randcalc >= slide->numOfPositions) {
+	else if (posCalc >= slide->numOfPositions) {
 		slide->position = slide->numOfPositions - 1;
 	}
-	else if (randcalc < 0) {
+	else if (posCalc < 0) {
 		slide->position = 0;
 	}
 	/* set position of arrow on slider */
 #pragma warning( suppress : 4244 )
-	slide->sliderArrowRectangle.y = 50 + (slide->spaceBetweenPositions * slide->position) - (.5 * slide->sliderArrowRectangle.h);
+	slide->sliderArrowRectangle.y = slide->slideRailRectangle.y + (slide->spaceBetweenPositions * slide->position) - (.5 * slide->sliderArrowRectangle.h);
 	return 0;
 }
 
