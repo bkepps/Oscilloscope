@@ -53,7 +53,7 @@ void* dataCopy_init(data* grphInfo, data* grphInfoCPY);
 
 //Demo.c
  data* demo_dataInit();
- int demo_gather(data* grphinfo);
+ int demo_gather(data* grphinfo);					//1 volt/div sine wave
 
 //graph.c
 
